@@ -1,0 +1,20 @@
+[
+    {
+        "title": "Read a book",
+        "priority": "low",
+        "due_date": "19th",
+        "completed": false
+    },
+    {
+        "title": "Do laundry",
+        "priority": "medium",
+        "due_date": "19th",
+        "completed": false
+    },
+    {
+        "title": "Visit a friend",
+        "priority": "medium",
+        "due_date": "20th",
+        "completed": false
+    }
+]
