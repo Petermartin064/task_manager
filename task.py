@@ -1,6 +1,7 @@
 class Task:
     """Task definition"""
-    def __init__(self, title='', priority='Medium', due_date='', completed=False):
+    def __init__(self, title='', priority='Medium', due_date='', completed=False, id=None):
+        self.id=id
         self.title = title
         self.priority = priority
         self.due_date = due_date
@@ -9,7 +10,7 @@ class Task:
     def __str__(self):
         status = 'completed' if self.completed else 'pending'
             
-        return f"{self.title} | Due: {self.due_date} | Priority: {self.priority} | Status: {status}"
+        return f"{self.id}. {self.title} | Due: {self.due_date} | Priority: {self.priority} | Status: {status}"
     
     def to_dict(self):
         return {

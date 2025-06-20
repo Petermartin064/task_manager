@@ -1,5 +1,6 @@
 from task_menu import add_task, view_task, change_task_status, delete_task
 from save_and_load_task import load_tasks, save_tasks
+from db import init_db
 
 def menu():
     print('Task Manager\n')
@@ -10,9 +11,9 @@ def menu():
     print('5. Exit')
     
 def main():
-    menu()
-    load_tasks()
+    init_db()
     while True:
+        menu()
         choice = input('Choose an option: ')
         if choice == '1':
             add_task()
@@ -28,7 +29,7 @@ def main():
             
         elif choice == '5':
             save_tasks()
-            print("Exiting Task Manager, Bye")
+            print("Exiting Task Manager")
             break
 
 if __name__ == '__main__':
