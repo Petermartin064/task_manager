@@ -11,7 +11,9 @@ def init_db():
             CREATE TABLE IF NOT EXISTS tasks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL,
+                description TEXT,
                 due_date TEXT,
+                due_time TEXT,
                 priority INTEGER,
                 completed INTEGER DEFAULT 0
             )
@@ -22,14 +24,14 @@ def add_task_to_db(task: Task):
     with sqlite3.connect(DB_NAME) as conn:
         c = conn.cursor()
         c.execute('''
-            INSERT INTO tasks (title, due_date, priority, completed)
-            VALUES (?, ?, ?, ?)
-        ''', (task.title, task.due_date, task.priority, int(task.completed)))
+            INSERT INTO tasks (title, description, due_date, due_time, priority, completed)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (task.title, task.description, task.due_date, task.due_time, task.priority, int(task.completed)))
         conn.commit()
 
 def get_all_tasks(sort_by='priority', completed_filter=None):
     query = '''
-        SELECT id, title, due_date, priority, completed
+        SELECT id, title, description, due_date, due_time, priority, completed
         FROM tasks
     '''
     params = []
@@ -45,7 +47,8 @@ def get_all_tasks(sort_by='priority', completed_filter=None):
         c.execute(query, params)
         rows = c.fetchall()
         return [
-            Task(id=row[0], title=row[1], due_date=row[2], priority=row[3], completed=bool(row[4]))
+            Task(id=row[0], title=row[1], description=row[2], due_date=row[3], due_time=row[4],
+                priority=row[5], completed=bool(row[6]))
             for row in rows
         ]
 
