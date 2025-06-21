@@ -1,6 +1,9 @@
+from colorama import Fore, Style
+
 from task import Task
 from global_state import tasks
 from db import add_task_to_db, get_all_tasks,update_task_status,delete_task_by_id, update_task_in_db
+from notification import notify_due_task
 
 def add_task():
     task_title = input("Enter task title: ")
@@ -19,6 +22,12 @@ def add_task():
     add_task_to_db(task)
     print("Task Added")
 
+def send_due_task_reminders():
+    tasks = get_all_tasks()
+    for task in tasks:
+        if task.is_due_soon():
+            notify_due_task(task)
+
 def view_task():
     print("\nView Tasks")
     sort_by = input("Sort by (priority / due_date / title)? [priority]: ").strip() or "priority"
@@ -32,9 +41,17 @@ def view_task():
         
     tasks = get_all_tasks(sort_by=sort_by, completed_filter=completed_filter)
     
+    due_soon = [t for t in tasks if t.is_due_soon()]
+    if due_soon:
+        print(Fore.YELLOW + "\n⏰ You have tasks due within the next 24 hours:\n")
+        for t in due_soon:
+            print(Fore.YELLOW + f"  - {t.title} (Due: {t.due_date} {t.due_time})")
+        print(Style.RESET_ALL)
+    
     if not tasks:
         print('No task found.')
-        
+    
+    print(Fore.CYAN + "\n📌 Task List:\n")    
     for task in tasks:
         print(task)
 
