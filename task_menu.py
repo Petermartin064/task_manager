@@ -3,11 +3,19 @@ from global_state import tasks
 from db import add_task_to_db, get_all_tasks,update_task_status,delete_task_by_id
 
 def add_task():
-    task_title = input("Enter the tasks title: ")
-    task_due_date = input("Enter task's due date: ")
+    task_title = input("Enter task title: ")
+    task_description = input("Enter task description: ")
+    task_due_date = input("When is task due?: ")
+    task_due_time = input("What time is task due(HH:MM in 24hr format): ")
     task_priority = input("Enter task priority (Low, Medium, High): ").capitalize()
     priority_value = Task.REVERSE_PRIORITY_MAP.get(task_priority, 2)
-    task = Task(title=task_title, priority=priority_value, due_date=task_due_date)
+    task = Task(
+        title=task_title,
+        description=task_description, 
+        priority=priority_value, 
+        due_date=task_due_date,
+        due_time=task_due_time
+        )
     add_task_to_db(task)
     print("Task Added")
 
