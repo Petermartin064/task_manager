@@ -12,6 +12,7 @@ def menu():
     
 def main():
     init_db()
+    load_tasks()
     while True:
         menu()
         choice = input('Choose an option: ')

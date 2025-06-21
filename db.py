@@ -12,7 +12,7 @@ def init_db():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL,
                 due_date TEXT,
-                priority TEXT,
+                priority INTEGER,
                 completed INTEGER DEFAULT 0
             )
         ''')
@@ -27,16 +27,27 @@ def add_task_to_db(task: Task):
         ''', (task.title, task.due_date, task.priority, int(task.completed)))
         conn.commit()
 
-def get_all_tasks(sort_by='priority'):
+def get_all_tasks(sort_by='priority', completed_filter=None):
+    query = '''
+        SELECT id, title, due_date, priority, completed
+        FROM tasks
+    '''
+    params = []
+
+    if completed_filter is not None:
+        query += ' WHERE completed = ?'
+        params.append(int(completed_filter))
+
+    query += f' ORDER BY {sort_by} ASC'
+
     with sqlite3.connect(DB_NAME) as conn:
         c = conn.cursor()
-        c.execute(f'''
-            SELECT id, title, due_date, priority, completed
-            FROM tasks
-            ORDER BY {sort_by} ASC
-        ''')
+        c.execute(query, params)
         rows = c.fetchall()
-        return [Task(id=row[0], title=row[1], due_date=row[2], priority=row[3], completed=bool(row[4])) for row in rows]
+        return [
+            Task(id=row[0], title=row[1], due_date=row[2], priority=row[3], completed=bool(row[4]))
+            for row in rows
+        ]
 
 def update_task_status(task_id: int, completed: bool):
     with sqlite3.connect(DB_NAME) as conn:

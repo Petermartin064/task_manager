@@ -5,18 +5,30 @@ from db import add_task_to_db, get_all_tasks,update_task_status,delete_task_by_i
 def add_task():
     task_title = input("Enter the tasks title: ")
     task_due_date = input("Enter task's due date: ")
-    task_priority = input("Enter task priority (low, medium, high): ")
-    task = Task(title=task_title, priority=task_priority, due_date=task_due_date)
+    task_priority = input("Enter task priority (Low, Medium, High): ").capitalize()
+    priority_value = Task.REVERSE_PRIORITY_MAP.get(task_priority, 2)
+    task = Task(title=task_title, priority=priority_value, due_date=task_due_date)
     add_task_to_db(task)
     print("Task Added")
 
 def view_task():
-    tasks = get_all_tasks()
+    print("\nView Tasks")
+    sort_by = input("Sort by (priority / due_date / title)? [priority]: ").strip() or "priority"
+    filter_status = input("Filter by status? (all / completed / pending) [all]: ").strip().lower()
+    
+    completed_filter = None
+    if filter_status == 'completed':
+        completed_filter = True
+    elif filter_status == 'pending':
+        completed_filter = False
+        
+    tasks = get_all_tasks(sort_by=sort_by, completed_filter=completed_filter)
+    
     if not tasks:
-        print("No task added yet")
-    else:
-        for i, task in enumerate(tasks):
-            print(f"{task}")
+        print('No task found.')
+        
+    for task in tasks:
+        print(task)
 
 def change_task_status():
     view_task()
