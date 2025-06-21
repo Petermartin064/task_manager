@@ -5,7 +5,7 @@ from db import add_task_to_db, get_all_tasks,update_task_status,delete_task_by_i
 def add_task():
     task_title = input("Enter task title: ")
     task_description = input("Enter task description: ")
-    task_due_date = input("When is task due?: ")
+    task_due_date = input("When is task due?((YYYY-MM-DD)): ")
     task_due_time = input("What time is task due(HH:MM in 24hr format): ")
     task_priority = input("Enter task priority (Low, Medium, High): ").capitalize()
     priority_value = Task.REVERSE_PRIORITY_MAP.get(task_priority, 2)
