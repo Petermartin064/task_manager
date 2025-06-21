@@ -28,12 +28,19 @@ class Task:
             return False
     
     def __str__(self):
-        status = 'Completed' if self.completed else 'Pending '
-        priority_label = self.PRIORITY_MAP.get(self.priority, "Unknown")
+        from colorama import Fore, Style
+
+        status = f"{Fore.GREEN}✅ Completed" if self.completed else f"{Fore.YELLOW}⏳ Pending"
         if self.is_overdue():
-            status += "(Task overdue!!!)"
-        
-        return f"{self.id}. {self.title} | Due: {self.due_date} {self.due_time} | Priority: {priority_label} | Status: {status}\nDescription: {self.description}"
+            status += f" {Fore.RED}⚠️ Overdue"
+
+        priority_label = self.PRIORITY_MAP.get(self.priority, "Unknown")
+        return (
+            f"{Fore.CYAN}{self.id}. {Style.BRIGHT}{self.title}{Style.RESET_ALL} | "
+            f"{Fore.MAGENTA}Due: {self.due_date} {self.due_time} | "
+            f"Priority: {priority_label} | Status: {status}\n"
+            f"{Fore.BLUE}   Description: {self.description}{Style.RESET_ALL}"
+        )
     
     def to_dict(self):
         return {
