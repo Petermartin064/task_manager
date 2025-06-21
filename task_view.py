@@ -1,4 +1,4 @@
-from task_menu import add_task, view_task, change_task_status, delete_task
+from task_menu import add_task, view_task, change_task_status, delete_task, edit_task
 from save_and_load_task import load_tasks, save_tasks
 from db import init_db
 
@@ -8,7 +8,8 @@ def menu():
     print('2. View Task')
     print('3. Change Task Status')
     print('4. Delete Task')
-    print('5. Exit')
+    print('5. Edit task')
+    print('6. Exit')
     
 def main():
     init_db()
@@ -27,8 +28,11 @@ def main():
             
         elif choice == '4':
             delete_task()
-            
+        
         elif choice == '5':
+            edit_task()
+            
+        elif choice == '6':
             save_tasks()
             print("Exiting Task Manager")
             break

@@ -1,6 +1,6 @@
 from task import Task
 from global_state import tasks
-from db import add_task_to_db, get_all_tasks,update_task_status,delete_task_by_id
+from db import add_task_to_db, get_all_tasks,update_task_status,delete_task_by_id, update_task_in_db
 
 def add_task():
     task_title = input("Enter task title: ")
@@ -50,4 +50,57 @@ def delete_task():
     task_id = int(input("Enter task ID to delete: "))
     delete_task_by_id(task_id)
     print("Task deleted.")
+
+def edit_task():
+    tasks = get_all_tasks(sort_by='id')
     
+    if not tasks:
+        print("No available task to edit.")
+        return
+        
+    for task in tasks:
+        print(task)
+    
+    try:
+        task_id = int(input("Enter task ID to edit: "))
+    except ValueError:
+        print("Enter a valid ID")
+        return
+    
+    task_to_edit = next((t for t in tasks if t.id == task_id), None)
+    
+    if not task_to_edit:
+        print("Task Not Found")
+        return
+    
+    print("\nPress enter to keep the current values")
+    
+    title = input(f"Title [{task_to_edit.title}]: ") or task_to_edit.title
+    description = input(f"Description [{task_to_edit.description}]: ") or task_to_edit.description
+    due_date = input(f"Due Date (YYYY-MM-DD) [{task_to_edit.due_date}]: ") or task_to_edit.due_date
+    due_time = input(f"Due Time (HH:MM) [{task_to_edit.due_time}]: ") or task_to_edit.due_time
+    
+    priority_label = Task.PRIORITY_MAP.get(task_to_edit.priority, 'Medium')
+    priority_input = input(f"Priority (Low/Medium/High) [{priority_label}]: ")
+    if priority_input:
+        priority = Task.REVERSE_PRIORITY_MAP.get(priority_input.capitalize(), task_to_edit.priority)
+    else:
+        priority = task_to_edit.priority
+        
+    completed_input = input(f"Completed? (yes/no) [{ 'yes' if task_to_edit.completed else 'no' }]: ")
+    if completed_input.lower() in ['yes', 'y']:
+        completed = True
+    elif completed_input.lower() in ['no', 'n']:
+        completed = False
+    else:
+        completed = task_to_edit.completed
+        
+    task_to_edit.title = title
+    task_to_edit.description = description
+    task_to_edit.due_date = due_date
+    task_to_edit.due_time = due_time
+    task_to_edit.priority = priority
+    task_to_edit.completed = completed
+    
+    update_task_in_db(task_to_edit)
+    print("✅ Task updated successfully.")

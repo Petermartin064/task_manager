@@ -63,3 +63,13 @@ def delete_task_by_id(task_id: int):
         c = conn.cursor()
         c.execute('DELETE FROM tasks WHERE id = ?', (task_id,))
         conn.commit()
+
+def update_task_in_db(task):
+    with sqlite3.connect(DB_NAME) as conn:
+        c = conn.cursor()
+        c.execute('''
+            UPDATE tasks
+            SET title = ?, description = ?, due_date = ?, due_time = ?, priority = ?, completed = ?
+            WHERE id = ?
+        ''', (task.title, task.description, task.due_date, task.due_time, task.priority, int(task.completed), task.id))
+        conn.commit()
