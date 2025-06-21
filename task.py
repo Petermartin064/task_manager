@@ -1,3 +1,5 @@
+from datetime import datetime
+
 class Task:
     """Task definition"""
     PRIORITY_MAP = {1: "Low", 2: "Medium", 3: "High"}
@@ -11,11 +13,26 @@ class Task:
         self.due_date = due_date
         self.due_time = due_time
         self.completed = completed
+        
+    def is_overdue(self):
+        if self.completed:
+            return False
+        
+        if not self.due_date or not self.due_time:
+            return False
+        
+        try:
+            due_datetime = datetime.strptime(f"{self.due_date} {self.due_time}", "%Y-%m-%d %H:%M")
+            return datetime.now() > due_datetime
+        except ValueError:
+            return False
     
     def __str__(self):
-        status = 'completed' if self.completed else 'pending'
-        priority_label = self.PRIORITY_MAP.get(self.priority, "unknown")
-            
+        status = 'Completed' if self.completed else 'Pending '
+        priority_label = self.PRIORITY_MAP.get(self.priority, "Unknown")
+        if self.is_overdue():
+            status += "(Task overdue!!!)"
+        
         return f"{self.id}. {self.title} | Due: {self.due_date} {self.due_time} | Priority: {priority_label} | Status: {status}\nDescription: {self.description}"
     
     def to_dict(self):
