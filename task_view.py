@@ -2,7 +2,7 @@ import os
 
 from colorama import Fore, Style, init
 
-from task_menu import add_task, view_task, change_task_status, delete_task, edit_task
+from task_menu import add_task, view_task, change_task_status, delete_task, edit_task, send_due_task_reminders
 from save_and_load_task import load_tasks, save_tasks
 from db import init_db
 
@@ -25,6 +25,7 @@ def main():
     try:
         init_db()
         load_tasks()
+        send_due_task_reminders()
         while True:
             menu()
             choice = input('Choose an option: ')

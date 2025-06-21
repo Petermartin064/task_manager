@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime,timedelta
 
 class Task:
     """Task definition"""
@@ -27,12 +27,27 @@ class Task:
         except ValueError:
             return False
     
+    def is_due_soon(self):
+        """Returns True if the task is due within the next 2 hours."""
+        if self.completed or not self.due_date or not self.due_time:
+            return False
+        
+        try:
+            due_datetime = datetime.strptime(f"{self.due_date} {self.due_time}", "%Y-%m-%d %H:%M")
+            now = datetime.now()
+            return now <= due_datetime <= (now + timedelta(hours=2))
+        except ValueError:
+            return False
+    
     def __str__(self):
         from colorama import Fore, Style
 
         status = f"{Fore.GREEN}✅ Completed" if self.completed else f"{Fore.YELLOW}⏳ Pending"
         if self.is_overdue():
             status += f" {Fore.RED}⚠️ Overdue"
+            
+        if self.is_due_soon() and not self.is_overdue():
+            status += f" {Fore.YELLOW} Due Soon!"
 
         priority_label = self.PRIORITY_MAP.get(self.priority, "Unknown")
         return (
