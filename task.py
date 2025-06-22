@@ -44,7 +44,7 @@ class Task:
 
         status = f"{Fore.GREEN}✅ Completed" if self.completed else f"{Fore.YELLOW}⏳ Pending"
         if self.is_overdue():
-            status += f" {Fore.RED}⚠️ Overdue"
+            status += f" {Fore.RED} Overdue!!!"
             
         if self.is_due_soon() and not self.is_overdue():
             status += f" {Fore.YELLOW} Due Soon!"
@@ -73,3 +73,10 @@ class Task:
             due_date=data['due_date'],
             completed=data['completed']
         )
+    
+    def to_plaintext(self):
+        status = 'Completed' if self.completed else 'Pending'
+        priority_label = self.PRIORITY_MAP.get(self.priority, "Unknown")
+        overdue_marker = " Overdue!!!" if self.is_overdue() else ""
+
+        return f"{self.id}. {self.title} | Due: {self.due_date} {self.due_time} | Priority: {priority_label} | Status: {status}{overdue_marker}\nDescription: {self.description}"

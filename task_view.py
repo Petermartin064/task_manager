@@ -4,6 +4,7 @@ from colorama import Fore, Style, init
 
 from task_menu import add_task, view_task, change_task_status, delete_task, edit_task, send_due_task_reminders
 from save_and_load_task import load_tasks, save_tasks
+from exporter import export_tasks
 from db import init_db
 
 init(autoreset=True)
@@ -18,7 +19,8 @@ def menu():
     print(Fore.YELLOW + "3." + Style.RESET_ALL + " Change Task Status")
     print(Fore.YELLOW + "4." + Style.RESET_ALL + " Delete Task")
     print(Fore.YELLOW + "5." + Style.RESET_ALL + " Edit Task")
-    print(Fore.YELLOW + "6." + Style.RESET_ALL + " Exit\n")
+    print(Fore.YELLOW + "6." + Style.RESET_ALL + " Save & Exit")
+    print(Fore.YELLOW + "7." + Style.RESET_ALL + " Export Tasks\n")
     
 def main():
     
@@ -49,6 +51,13 @@ def main():
                 save_tasks()
                 print("Exiting Task Manager")
                 break
+            
+            elif choice == '7':
+                print("Press Enter to continue")
+                file_name = input("Enter file name [task_export]").strip().lower() or 'task_export'
+                fmt = input("Export format (csv/json/txt) [csv]: ").strip().lower() or 'csv'
+                export_tasks(format=fmt, file_name=file_name)
+            
     except KeyboardInterrupt:
         save_tasks()
         print("\nExiting Task Manager")
